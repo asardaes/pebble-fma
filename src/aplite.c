@@ -21,16 +21,16 @@ static char temperature[5];
 
 static int anim_index = 1;
 static uint32_t anim_duration = 75;
-//static void next_animation();
 static int anim_queue = 0;
 
 static bool weather_flag = 1; // true initially
 static bool t_unit = 0; // false (°C) by default
 
-//static void update_time();
 static bool dbg = 0;
 
 /* ==================================================================================================================================================================== */
+//static void next_animation();
+//static void update_time();
 
 void debug() {
 	static int test = -20;

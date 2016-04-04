@@ -8,14 +8,14 @@
         "configurable"
     ],
     "companyName": "Apestowesome",
-    "enableMultiJS": false,
+    "enableMultiJS": true,
     "longName": "FMA State Alchemist",
     "projectType": "native",
     "resources": {
         "media": [
             {
-                "file": "images/BgCircle.png",
-                "name": "IMAGE_BG_CIRCLE",
+                "file": "images/stone2.png",
+                "name": "IMAGE_STONE2",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
@@ -25,96 +25,6 @@
                 "name": "IMAGE_SPARKS_4",
                 "targetPlatforms": null,
                 "type": "bitmap"
-            },
-            {
-                "file": "images/ArmCircle03.png",
-                "name": "IMAGE_ARMS_2",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "images/ArmCircle02.png",
-                "name": "IMAGE_ARMS_1",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "images/BloodRune.png",
-                "name": "IMAGE_BT",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "images/philosopherStone.png",
-                "name": "IMAGE_STONE",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "images/StateAlchemistSymbol.png",
-                "name": "IMAGE_BACKGROUND",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "images/circle.png",
-                "name": "IMAGE_CIRCLE",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "images/BloodRuneScratched.png",
-                "name": "IMAGE_NOBT",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "images/ArmCircle01.png",
-                "name": "IMAGE_ARMS_0",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "images/circleCharging.png",
-                "name": "IMAGE_CHARGE",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "images/stone2.png",
-                "name": "IMAGE_STONE2",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "fonts/ReturnofGanon.ttf",
-                "name": "FONT_TEMP_14",
-                "type": "font"
-            },
-            {
-                "file": "fonts/still time.ttf",
-                "name": "FONT_JAGGED_22",
-                "type": "font"
-            },
-            {
-                "file": "fonts/still time.ttf",
-                "name": "FONT_JAGGED_24",
-                "type": "font"
-            },
-            {
-                "file": "fonts/Staubach.ttf",
-                "name": "FONT_TIME_26",
-                "type": "font"
-            },
-            {
-                "file": "fonts/Staubach.ttf",
-                "name": "FONT_TIME_30",
-                "type": "font"
-            },
-            {
-                "file": "fonts/Staubach.ttf",
-                "name": "FONT_DATE_18",
-                "type": "font"
             },
             {
                 "file": "images/sparks03.png",
@@ -136,6 +46,96 @@
                 "name": "IMAGE_SPARKS_1",
                 "targetPlatforms": null,
                 "type": "bitmap"
+            },
+            {
+                "file": "images/philosopherStone.png",
+                "name": "IMAGE_STONE",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/circleCharging.png",
+                "name": "IMAGE_CHARGE",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/circle.png",
+                "name": "IMAGE_CIRCLE",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/StateAlchemistSymbol.png",
+                "name": "IMAGE_BACKGROUND",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/BloodRuneScratched.png",
+                "name": "IMAGE_NOBT",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/BloodRune.png",
+                "name": "IMAGE_BT",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/BgCircle.png",
+                "name": "IMAGE_BG_CIRCLE",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/ArmCircle03.png",
+                "name": "IMAGE_ARMS_2",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/ArmCircle02.png",
+                "name": "IMAGE_ARMS_1",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/ArmCircle01.png",
+                "name": "IMAGE_ARMS_0",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "fonts/still time.ttf",
+                "name": "FONT_JAGGED_24",
+                "type": "font"
+            },
+            {
+                "file": "fonts/still time.ttf",
+                "name": "FONT_JAGGED_22",
+                "type": "font"
+            },
+            {
+                "file": "fonts/Staubach.ttf",
+                "name": "FONT_DATE_18",
+                "type": "font"
+            },
+            {
+                "file": "fonts/Staubach.ttf",
+                "name": "FONT_TIME_30",
+                "type": "font"
+            },
+            {
+                "file": "fonts/Staubach.ttf",
+                "name": "FONT_TIME_26",
+                "type": "font"
+            },
+            {
+                "file": "fonts/ReturnofGanon.ttf",
+                "name": "FONT_TEMP_14",
+                "type": "font"
             }
         ]
     },
