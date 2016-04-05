@@ -109,17 +109,17 @@
             },
             {
                 "file": "fonts/still time.ttf",
-                "name": "FONT_JAGGED_24",
-                "type": "font"
-            },
-            {
-                "file": "fonts/still time.ttf",
                 "name": "FONT_JAGGED_22",
                 "type": "font"
             },
             {
+                "file": "fonts/still time.ttf",
+                "name": "FONT_JAGGED_24",
+                "type": "font"
+            },
+            {
                 "file": "fonts/Staubach.ttf",
-                "name": "FONT_DATE_18",
+                "name": "FONT_TIME_26",
                 "type": "font"
             },
             {
@@ -129,7 +129,7 @@
             },
             {
                 "file": "fonts/Staubach.ttf",
-                "name": "FONT_TIME_26",
+                "name": "FONT_DATE_18",
                 "type": "font"
             },
             {
