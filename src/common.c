@@ -1,9 +1,52 @@
 #include <pebble.h>
 #include "common.h"
 
+extern TextLayer *time_layer, *date_layer, *message_layer, *batt_layer, *temp_layer;
+
+extern BitmapLayer *bg_layer, *hands_layer, *sparks_layer, *rune_layer, *charge_layer;
+
+extern GBitmap *bg_bitmap, *bgc_bitmap;
+extern GBitmap *hands_bitmap_0, *hands_bitmap_1, *hands_bitmap_2;
+extern GBitmap *sparks_bitmap_1, *sparks_bitmap_2, *sparks_bitmap_3, *sparks_bitmap_4;
+extern GBitmap *rune_bitmap;
+
+static Window *s_main_window;
+
+static char date_buffer[16];
+static char time_buffer[] = "00:00";
+static char batt_buffer[] = "100";
+static char temperature[5];
+
+static int anim_index = 1;
+static int anim_queue = 0;
+static uint32_t anim_duration = 75;
+
+static bool weather_flag = true; // true initially
+static bool temp_unit = false; // false (°C) by default
+
+static bool dbg = false;
+
+static void next_animation();
+
 /* ===================================================================================================================== */
 
-char *translate_error(AppMessageResult result) {
+static void update_time();
+
+void debug() {
+	/*
+	static int test = -20;
+	snprintf(temperature, sizeof(temperature), "%d", test);
+	text_layer_set_text(temp_layer, temperature);
+	test++;
+	update_time();
+	app_timer_register(500, debug, NULL);
+	//next_animation();
+	*/
+}
+
+/* ===================================================================================================================== */
+
+static char *translate_error(AppMessageResult result) {
   	switch (result) {
 		case APP_MSG_OK: return "APP_MSG_OK";
 		case APP_MSG_SEND_TIMEOUT: return "APP_MSG_SEND_TIMEOUT";
@@ -23,7 +66,7 @@ char *translate_error(AppMessageResult result) {
   }
 }
 
-void get_weather() {
+static void get_weather() {
 	APP_LOG(APP_LOG_LEVEL_DEBUG, "Getting new weather info.");
 
 	// Begin dictionary
@@ -49,14 +92,284 @@ void get_weather() {
 
 /* ===================================================================================================================== */
 
-void inbox_dropped_callback(AppMessageResult reason, void *context) {
+static void tap_handler_exit(void *data) {
+	next_animation();
+}
+
+static void tap_handler(AccelAxisType axis, int32_t direction) {
+	APP_LOG(APP_LOG_LEVEL_DEBUG, "Entering tap_handler");
+	bitmap_layer_set_bitmap(bg_layer, bgc_bitmap);
+	text_layer_set_text(message_layer, "Don't\nforget\n3.oct.11");
+	
+	if (anim_queue == 0) {
+		app_timer_register(5000, tap_handler_exit, NULL);
+		anim_queue++;
+	}
+}
+
+/* ===================================================================================================================== */
+
+void handle_bt(bool connected) {
+	if (rune_bitmap)
+		gbitmap_destroy(rune_bitmap);
+	
+	if (connected) {
+		rune_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BT);
+		bitmap_layer_set_bitmap(rune_layer, rune_bitmap);
+	} else {
+		rune_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NOBT);
+		bitmap_layer_set_bitmap(rune_layer, rune_bitmap);
+	}
+}
+
+void handle_battery(BatteryChargeState charge_state) {	
+	if (charge_state.is_charging) {
+		layer_set_hidden(bitmap_layer_get_layer(charge_layer), false);
+	} else {
+		layer_set_hidden(bitmap_layer_get_layer(charge_layer), true);
+	}
+	
+	if (dbg)
+		snprintf(batt_buffer, sizeof(batt_buffer), "100");
+	else
+		snprintf(batt_buffer, sizeof(batt_buffer), "%d", charge_state.charge_percent);		
+	
+	text_layer_set_text(batt_layer, batt_buffer);
+}
+
+/* ===================================================================================================================== */
+
+static void update_time() {
+	// Get a tm structure
+	time_t temp = time(NULL); 
+	struct tm *tick_time = localtime(&temp);
+
+	// Write the current hours and minutes into the buffer
+	if(clock_is_24h_style() == true) {
+		// Use 24 hour format
+		strftime(time_buffer, sizeof(time_buffer), "%H:%M", tick_time);
+	} else {
+		// Use 12 hour format
+		strftime(time_buffer, sizeof(time_buffer), "%I:%M", tick_time);
+	}
+	
+	if (dbg)
+		text_layer_set_text(time_layer, "12:34");
+	else {
+		text_layer_set_text(time_layer, time_buffer);
+		
+		if (bluetooth_connection_service_peek() && weather_flag)
+			get_weather();
+	}
+	
+	// Date
+	strftime(date_buffer, sizeof(date_buffer), "%b, %a %d", tick_time);
+	text_layer_set_text(date_layer, date_buffer);
+}
+
+static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
+	if (units_changed & HOUR_UNIT) {
+		// To mark that temperature should be updated
+		weather_flag = 1;
+		text_layer_set_text(temp_layer, "...");
+	}
+	
+	if (anim_queue == 0) {
+		anim_queue++;
+		next_animation();
+	}
+}
+
+/* ===================================================================================================================== */
+
+static void next_animation() {
+	bool stop = 0;
+	
+	switch (anim_index) {
+		case 1:
+		bitmap_layer_set_bitmap(hands_layer, hands_bitmap_1);
+		anim_index++;
+		break;
+		
+		case 2:
+		bitmap_layer_set_bitmap(hands_layer, hands_bitmap_2);
+		text_layer_set_text(time_layer, "");
+		text_layer_set_text(date_layer, "");
+		text_layer_set_text(message_layer, "");
+		bitmap_layer_set_bitmap(bg_layer, bg_bitmap);
+		anim_duration = 100;
+		anim_index++;
+		break;
+		
+		case 3:
+		psleep(200);
+		
+		bitmap_layer_set_bitmap(sparks_layer, sparks_bitmap_1);
+		layer_set_hidden(bitmap_layer_get_layer(sparks_layer), false);
+		
+		anim_index++;
+		break;
+		
+		case 4:
+		bitmap_layer_set_bitmap(sparks_layer, sparks_bitmap_2);
+		
+		anim_index++;
+		break;
+		
+		case 5:
+		bitmap_layer_set_bitmap(hands_layer, hands_bitmap_1);
+		bitmap_layer_set_bitmap(sparks_layer, sparks_bitmap_3);
+		
+		anim_index++;
+		break;
+		
+		case 6:
+		bitmap_layer_set_bitmap(hands_layer, hands_bitmap_0);
+		bitmap_layer_set_bitmap(sparks_layer, sparks_bitmap_4);
+		
+		anim_index++;
+		break;
+		
+		default:
+		layer_set_hidden(bitmap_layer_get_layer(sparks_layer), true);
+		anim_index = 1;
+		anim_duration = 75;
+		
+		if (!dbg)
+			stop = 1;
+		else
+			update_time();
+		break;
+	}
+	
+	if (!stop) {
+		if (dbg)
+			app_timer_register(5000, next_animation, NULL);
+		else
+			app_timer_register(anim_duration, next_animation, NULL);
+	} else {
+		update_time();
+		anim_queue = 0;
+	}
+}
+
+/* ===================================================================================================================== */
+
+void inbox_received_callback(DictionaryIterator *iterator, void *context) {
+	// Read first item
+	Tuple *t = dict_read_first(iterator);
+	
+	// For all items
+	while(t != NULL) {
+		// Which key was received?
+		switch(t->key) {
+			case WEATHER_TEMPERATURE:
+			// true = Fahrenheit
+			if (temp_unit) {
+				snprintf(temperature, sizeof(temperature), "%d",  ((int)t->value->int32) * 9/5 + 32 );
+			} else {
+				snprintf(temperature, sizeof(temperature), "%d", (int)t->value->int32);
+			}
+			text_layer_set_text(temp_layer, temperature);
+			
+			// Mark that weather shouldn't be updated any more
+			weather_flag = 0; 
+			break;
+			
+			case UNIT_TEMPERATURE:
+			if (strcmp(t->value->cstring, "C") == 0) {
+				persist_write_bool(UNIT_TEMPERATURE, false);
+				temp_unit = 0;
+				APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting temperature units to celsius");
+			} else if (strcmp(t->value->cstring, "F") == 0) {
+				persist_write_bool(UNIT_TEMPERATURE, true);
+				temp_unit = 1;
+				APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting temperature units to fahrenheit");
+			}
+			
+			text_layer_set_text(temp_layer, "...");
+			weather_flag = 1;
+			get_weather();
+			break;
+			
+			default:
+			APP_LOG(APP_LOG_LEVEL_ERROR, "Key %d not recognized!", (int)t->key);
+			break;
+		}
+
+		// Look for next item
+		t = dict_read_next(iterator);
+	}
+}
+
+static void inbox_dropped_callback(AppMessageResult reason, void *context) {
 	APP_LOG(APP_LOG_LEVEL_ERROR, "Message dropped!: %s", translate_error(reason));
 }
 
-void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
+static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
 	APP_LOG(APP_LOG_LEVEL_ERROR, "Outbox send failed!: %s", translate_error(reason));
 }
 
-void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
+static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 	APP_LOG(APP_LOG_LEVEL_INFO, "Outbox send success!");
 }
+
+/* ===================================================================================================================== */
+
+void init() {
+	if (persist_exists(UNIT_TEMPERATURE))
+		temp_unit = persist_read_bool(UNIT_TEMPERATURE);
+	
+	// Create main Window element and assign to pointer
+	s_main_window = window_create();
+
+	// Set handlers to manage the elements inside the Window
+	window_set_window_handlers(s_main_window, (WindowHandlers) {
+		.load = main_window_load,
+		.unload = main_window_unload,
+	});
+
+	// Show the Window on the watch, with animated=true
+	window_stack_push(s_main_window, true);
+	
+	// Register bluetooth service
+	connection_service_subscribe((ConnectionHandlers) {
+		.pebble_app_connection_handler = handle_bt,
+		NULL
+	});
+	
+	// Register battery service
+	battery_state_service_subscribe(handle_battery);
+	
+	// Register with TickTimerService
+	if (!dbg) tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
+	
+	// Subscribe to the accelerometer tap service
+	accel_tap_service_subscribe(tap_handler);
+	
+	// Register callbacks
+	app_message_register_inbox_received(inbox_received_callback);
+	app_message_register_inbox_dropped(inbox_dropped_callback);
+	app_message_register_outbox_failed(outbox_failed_callback);
+	app_message_register_outbox_sent(outbox_sent_callback);
+	
+	// Open AppMessage
+	AppMessageResult res = app_message_open(APP_MESSAGE_INBOX_SIZE_MINIMUM, APP_MESSAGE_OUTBOX_SIZE_MINIMUM);
+	APP_LOG(APP_LOG_LEVEL_DEBUG, "AppMsgOpen: %s", translate_error(res));
+	
+	if (dbg)
+		debug();
+	else {
+		anim_queue++;
+		next_animation();
+	}
+}
+
+void deinit() {
+	tick_timer_service_unsubscribe();
+	accel_tap_service_unsubscribe();
+	connection_service_unsubscribe();
+	battery_state_service_unsubscribe();
+	window_destroy(s_main_window);
+}
+

@@ -78,6 +78,7 @@ Pebble.addEventListener('showConfiguration',
 	function(e) {
 		console.log('showConfiguration event');
 		Pebble.openURL('http://asardaes.github.io/pebble-fma/');
+		//Pebble.openURL('https://dl.dropboxusercontent.com/u/8602374/Zelda_GoT_Config.html');
 	}
 );
 
@@ -101,3 +102,4 @@ Pebble.addEventListener('webviewclosed',
 		);
 	}
 );
+

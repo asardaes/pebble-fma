@@ -1,3 +1,5 @@
+#pragma once
+
 #include <pebble.h>
 
 #ifndef WEATHER_TEMPERATURE
@@ -8,16 +10,12 @@
 #define UNIT_TEMPERATURE 1
 #endif
 
-/* ===================================================================================================================== */
+void handle_battery(BatteryChargeState charge_state); // used by main_window_load
+void handle_bt(bool connected); // used by main_window_load
 
-char *translate_error(AppMessageResult result);
+void main_window_load(Window *window);
+void main_window_unload(Window *window);
 
-void get_weather();
+void init();
+void deinit();
 
-/* ===================================================================================================================== */
-
-void inbox_dropped_callback(AppMessageResult reason, void *context);
-
-void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context);
-
-void outbox_sent_callback(DictionaryIterator *iterator, void *context);
