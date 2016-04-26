@@ -76,7 +76,7 @@ void main_window_load(Window *window) {
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(time_layer));
 	
 	// Date layer
-	date_layer = text_layer_create(GRect(3, 168-60, 144, 25));
+	date_layer = text_layer_create(GRect(0, 168-60, 142, 25));
 	text_layer_set_background_color(date_layer, GColorClear);
 	text_layer_set_text_color(date_layer, GColorWhite);
 	text_layer_set_font(date_layer, s_font_date);
@@ -84,7 +84,7 @@ void main_window_load(Window *window) {
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(date_layer));
 	
 	// Message layer
-	message_layer = text_layer_create(GRect(23, 10, 100, 100));
+	message_layer = text_layer_create(GRect(23, 11, 100, 100));
 	text_layer_set_background_color(message_layer, GColorClear);
 	text_layer_set_text_color(message_layer, GColorWhite);	
 	text_layer_set_font(message_layer, s_font_jagged);
