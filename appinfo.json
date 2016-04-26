@@ -183,11 +183,6 @@
                 "type": "font"
             },
             {
-                "file": "fonts/Staubach.ttf",
-                "name": "FONT_TIME_26",
-                "type": "font"
-            },
-            {
                 "file": "fonts/ReturnofGanon.ttf",
                 "name": "FONT_TEMP_14",
                 "type": "font"

@@ -97,6 +97,7 @@ static void tap_handler_exit(void *data) {
 	if (bg_bitmap) gbitmap_destroy(bg_bitmap);
 	bg_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND);
 	bitmap_layer_set_bitmap(bg_layer, bg_bitmap);
+	text_layer_set_text(message_layer, "");
 	
 	next_animation();
 }
@@ -214,7 +215,6 @@ static void next_animation() {
 			bitmap_layer_set_bitmap(hands_layer, hands_bitmap_2);
 			text_layer_set_text(time_layer, "");
 			text_layer_set_text(date_layer, "");
-			text_layer_set_text(message_layer, "");
 			anim_duration = 100;
 			anim_index++;
 		break;
