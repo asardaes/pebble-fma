@@ -5,12 +5,13 @@ extern TextLayer *time_layer, *date_layer, *message_layer, *batt_layer, *temp_la
 
 extern BitmapLayer *bg_layer, *hands_layer, *sparks_layer, *rune_layer, *charge_layer;
 
-extern GBitmap *bg_bitmap, *bgc_bitmap;
+extern GBitmap *bg_bitmap;
 extern GBitmap *hands_bitmap_0, *hands_bitmap_1, *hands_bitmap_2;
-extern GBitmap *sparks_bitmap_1, *sparks_bitmap_2, *sparks_bitmap_3, *sparks_bitmap_4;
-extern GBitmap *rune_bitmap;
+extern GBitmap *rune_bitmap, *charge_bitmap;
 
 static Window *s_main_window;
+
+static GBitmap *s_sparks_bitmap;
 
 static char date_buffer[16];
 static char time_buffer[] = "00:00";
@@ -93,12 +94,21 @@ static void get_weather() {
 /* ===================================================================================================================== */
 
 static void tap_handler_exit(void *data) {
+	if (bg_bitmap) gbitmap_destroy(bg_bitmap);
+	bg_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND);
+	bitmap_layer_set_bitmap(bg_layer, bg_bitmap);
+	
 	next_animation();
 }
 
 static void tap_handler(AccelAxisType axis, int32_t direction) {
 	APP_LOG(APP_LOG_LEVEL_DEBUG, "Entering tap_handler");
-	bitmap_layer_set_bitmap(bg_layer, bgc_bitmap);
+	
+	if (bg_bitmap) gbitmap_destroy(bg_bitmap);
+	
+	bg_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BG_CIRCLE);
+	bitmap_layer_set_bitmap(bg_layer, bg_bitmap);
+	
 	text_layer_set_text(message_layer, "Don't\nforget\n3.oct.11");
 	
 	if (anim_queue == 0) {
@@ -110,31 +120,35 @@ static void tap_handler(AccelAxisType axis, int32_t direction) {
 /* ===================================================================================================================== */
 
 void handle_bt(bool connected) {
-	if (rune_bitmap)
-		gbitmap_destroy(rune_bitmap);
+	if (rune_bitmap) gbitmap_destroy(rune_bitmap);
 	
 	if (connected) {
 		rune_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BT);
-		bitmap_layer_set_bitmap(rune_layer, rune_bitmap);
 	} else {
 		rune_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NOBT);
-		bitmap_layer_set_bitmap(rune_layer, rune_bitmap);
 	}
+	
+	bitmap_layer_set_bitmap(rune_layer, rune_bitmap);
 }
 
-void handle_battery(BatteryChargeState charge_state) {	
+void handle_battery(BatteryChargeState charge_state) {
+	if (charge_bitmap) gbitmap_destroy(charge_bitmap);
+	
 	if (charge_state.is_charging) {
-		layer_set_hidden(bitmap_layer_get_layer(charge_layer), false);
+		charge_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CHARGE);
+
+		text_layer_set_text(batt_layer, "");
+		
 	} else {
-		layer_set_hidden(bitmap_layer_get_layer(charge_layer), true);
+		charge_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CIRCLE);
+		
+		snprintf(batt_buffer, sizeof(batt_buffer), "%d", charge_state.charge_percent);
+		text_layer_set_text(batt_layer, batt_buffer);
 	}
 	
-	if (dbg)
-		snprintf(batt_buffer, sizeof(batt_buffer), "100");
-	else
-		snprintf(batt_buffer, sizeof(batt_buffer), "%d", charge_state.charge_percent);		
+	bitmap_layer_set_bitmap(charge_layer, charge_bitmap);
 	
-	text_layer_set_text(batt_layer, batt_buffer);
+	if (dbg) text_layer_set_text(batt_layer, "100");
 }
 
 /* ===================================================================================================================== */
@@ -158,7 +172,7 @@ static void update_time() {
 	else {
 		text_layer_set_text(time_layer, time_buffer);
 		
-		if (bluetooth_connection_service_peek() && weather_flag)
+		if (connection_service_peek_pebble_app_connection() && weather_flag)
 			get_weather();
 	}
 	
@@ -183,62 +197,71 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 /* ===================================================================================================================== */
 
 static void next_animation() {
+	//APP_LOG(APP_LOG_LEVEL_DEBUG, "Animation %d", anim_index);
 	bool stop = 0;
+	
+	if (anim_index > 3) {
+		gbitmap_destroy(s_sparks_bitmap);		
+	}
 	
 	switch (anim_index) {
 		case 1:
-		bitmap_layer_set_bitmap(hands_layer, hands_bitmap_1);
-		anim_index++;
+			bitmap_layer_set_bitmap(hands_layer, hands_bitmap_1);
+			anim_index++;
 		break;
 		
 		case 2:
-		bitmap_layer_set_bitmap(hands_layer, hands_bitmap_2);
-		text_layer_set_text(time_layer, "");
-		text_layer_set_text(date_layer, "");
-		text_layer_set_text(message_layer, "");
-		bitmap_layer_set_bitmap(bg_layer, bg_bitmap);
-		anim_duration = 100;
-		anim_index++;
+			bitmap_layer_set_bitmap(hands_layer, hands_bitmap_2);
+			text_layer_set_text(time_layer, "");
+			text_layer_set_text(date_layer, "");
+			text_layer_set_text(message_layer, "");
+			anim_duration = 100;
+			anim_index++;
 		break;
 		
 		case 3:
-		psleep(200);
-		
-		bitmap_layer_set_bitmap(sparks_layer, sparks_bitmap_1);
-		layer_set_hidden(bitmap_layer_get_layer(sparks_layer), false);
-		
-		anim_index++;
+			psleep(200);
+
+			s_sparks_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPARKS_1);
+			bitmap_layer_set_bitmap(sparks_layer, s_sparks_bitmap);
+			layer_set_hidden(bitmap_layer_get_layer(sparks_layer), false);
+
+			anim_index++;
 		break;
 		
 		case 4:
-		bitmap_layer_set_bitmap(sparks_layer, sparks_bitmap_2);
-		
-		anim_index++;
+			s_sparks_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPARKS_2);
+			bitmap_layer_set_bitmap(sparks_layer, s_sparks_bitmap);
+
+			anim_index++;
 		break;
 		
 		case 5:
-		bitmap_layer_set_bitmap(hands_layer, hands_bitmap_1);
-		bitmap_layer_set_bitmap(sparks_layer, sparks_bitmap_3);
-		
-		anim_index++;
+			bitmap_layer_set_bitmap(hands_layer, hands_bitmap_1);
+			s_sparks_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPARKS_3);
+			bitmap_layer_set_bitmap(sparks_layer, s_sparks_bitmap);
+
+			anim_index++;
 		break;
 		
 		case 6:
-		bitmap_layer_set_bitmap(hands_layer, hands_bitmap_0);
-		bitmap_layer_set_bitmap(sparks_layer, sparks_bitmap_4);
-		
-		anim_index++;
+			bitmap_layer_set_bitmap(hands_layer, hands_bitmap_0);
+			s_sparks_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPARKS_4);
+			bitmap_layer_set_bitmap(sparks_layer, s_sparks_bitmap);
+
+			anim_index++;
 		break;
 		
 		default:
-		layer_set_hidden(bitmap_layer_get_layer(sparks_layer), true);
-		anim_index = 1;
-		anim_duration = 75;
+			anim_index = 1;
+			anim_duration = 75;
 		
-		if (!dbg)
-			stop = 1;
-		else
-			update_time();
+			layer_set_hidden(bitmap_layer_get_layer(sparks_layer), true);
+
+			if (!dbg)
+				stop = 1;
+			else
+				update_time();
 		break;
 	}
 	

@@ -14,8 +14,45 @@
     "resources": {
         "media": [
             {
+                "file": "images/sparks_04.png",
+                "name": "IMAGE_SPARKS_4",
+                "spaceOptimization": "memory",
+                "targetPlatforms": [
+                    "basalt"
+                ],
+                "type": "bitmap"
+            },
+            {
+                "file": "images/sparks_03.png",
+                "name": "IMAGE_SPARKS_3",
+                "spaceOptimization": "memory",
+                "targetPlatforms": [
+                    "basalt"
+                ],
+                "type": "bitmap"
+            },
+            {
+                "file": "images/sparks_02.png",
+                "name": "IMAGE_SPARKS_2",
+                "spaceOptimization": "memory",
+                "targetPlatforms": [
+                    "basalt"
+                ],
+                "type": "bitmap"
+            },
+            {
+                "file": "images/sparks_01.png",
+                "name": "IMAGE_SPARKS_1",
+                "spaceOptimization": "memory",
+                "targetPlatforms": [
+                    "basalt"
+                ],
+                "type": "bitmap"
+            },
+            {
                 "file": "images/stone2.png",
                 "name": "IMAGE_STONE2",
+                "spaceOptimization": "memory",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
@@ -23,94 +60,107 @@
                 "file": "images/sparks04.png",
                 "memoryFormat": "1Bit",
                 "name": "IMAGE_SPARKS_4",
-                "targetPlatforms": null,
+                "targetPlatforms": [
+                    "aplite"
+                ],
                 "type": "bitmap"
             },
             {
                 "file": "images/sparks03.png",
                 "memoryFormat": "1Bit",
                 "name": "IMAGE_SPARKS_3",
-                "targetPlatforms": null,
+                "targetPlatforms": [
+                    "aplite"
+                ],
                 "type": "bitmap"
             },
             {
                 "file": "images/sparks02.png",
                 "memoryFormat": "1Bit",
                 "name": "IMAGE_SPARKS_2",
-                "targetPlatforms": null,
+                "targetPlatforms": [
+                    "aplite"
+                ],
                 "type": "bitmap"
             },
             {
                 "file": "images/sparks01.png",
                 "memoryFormat": "1Bit",
                 "name": "IMAGE_SPARKS_1",
-                "targetPlatforms": null,
+                "targetPlatforms": [
+                    "aplite"
+                ],
                 "type": "bitmap"
             },
             {
                 "file": "images/philosopherStone.png",
                 "name": "IMAGE_STONE",
+                "spaceOptimization": "memory",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
             {
                 "file": "images/circleCharging.png",
                 "name": "IMAGE_CHARGE",
+                "spaceOptimization": "memory",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
             {
                 "file": "images/circle.png",
                 "name": "IMAGE_CIRCLE",
+                "spaceOptimization": "memory",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
             {
                 "file": "images/StateAlchemistSymbol.png",
                 "name": "IMAGE_BACKGROUND",
+                "spaceOptimization": "memory",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
             {
                 "file": "images/BloodRuneScratched.png",
                 "name": "IMAGE_NOBT",
+                "spaceOptimization": "memory",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
             {
                 "file": "images/BloodRune.png",
                 "name": "IMAGE_BT",
+                "spaceOptimization": "memory",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
             {
                 "file": "images/BgCircle.png",
                 "name": "IMAGE_BG_CIRCLE",
+                "spaceOptimization": "memory",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
             {
                 "file": "images/ArmCircle03.png",
                 "name": "IMAGE_ARMS_2",
+                "spaceOptimization": "memory",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
             {
                 "file": "images/ArmCircle02.png",
                 "name": "IMAGE_ARMS_1",
+                "spaceOptimization": "memory",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
             {
                 "file": "images/ArmCircle01.png",
                 "name": "IMAGE_ARMS_0",
+                "spaceOptimization": "memory",
                 "targetPlatforms": null,
                 "type": "bitmap"
-            },
-            {
-                "file": "fonts/still time.ttf",
-                "name": "FONT_JAGGED_22",
-                "type": "font"
             },
             {
                 "file": "fonts/still time.ttf",
@@ -118,8 +168,13 @@
                 "type": "font"
             },
             {
+                "file": "fonts/still time.ttf",
+                "name": "FONT_JAGGED_22",
+                "type": "font"
+            },
+            {
                 "file": "fonts/Staubach.ttf",
-                "name": "FONT_TIME_26",
+                "name": "FONT_DATE_18",
                 "type": "font"
             },
             {
@@ -129,7 +184,7 @@
             },
             {
                 "file": "fonts/Staubach.ttf",
-                "name": "FONT_DATE_18",
+                "name": "FONT_TIME_26",
                 "type": "font"
             },
             {

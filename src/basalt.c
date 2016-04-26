@@ -1,4 +1,4 @@
-#ifdef PBL_PLATFORM_APLITE
+#ifdef PBL_PLATFORM_BASALT
 
 #include <pebble.h>
 #include "common.h"
@@ -21,7 +21,7 @@ GBitmap *rune_bitmap, *charge_bitmap;
 
 void main_window_load(Window *window) {
 	// Black background, 144 × 168 pixels, 176 PPI
-	window_set_background_color(window, GColorBlack);
+	window_set_background_color(window, GColorOxfordBlue);
 	
 	// Assign GFont
 	s_font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TIME_30));
@@ -31,14 +31,14 @@ void main_window_load(Window *window) {
 	
 	// Background layer
 	bg_layer = bitmap_layer_create(GRect(23, 5, 100, 100));
-	bitmap_layer_set_compositing_mode(bg_layer, GCompOpAssign);
+	bitmap_layer_set_compositing_mode(bg_layer, GCompOpSet);
 	bg_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND);
 	bitmap_layer_set_bitmap(bg_layer, bg_bitmap);
 	layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(bg_layer));
 	
 	// Hands layer
-	hands_layer = bitmap_layer_create(GRect(0, 168-62, 144, 62));
-	bitmap_layer_set_compositing_mode(hands_layer, GCompOpAssign);
+	hands_layer = bitmap_layer_create(GRect(0, 168-65, 144, 65));
+	bitmap_layer_set_compositing_mode(hands_layer, GCompOpSet);
 	hands_bitmap_0 = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ARMS_0);
 	bitmap_layer_set_bitmap(hands_layer, hands_bitmap_0);
 	layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(hands_layer));
@@ -47,22 +47,23 @@ void main_window_load(Window *window) {
 	hands_bitmap_2 = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ARMS_2);
 	
 	// Sparks layer
-	sparks_layer = bitmap_layer_create(GRect(0, 168-62, 144, 62));	
-	bitmap_layer_set_compositing_mode(sparks_layer, GCompOpOr);	
+	sparks_layer = bitmap_layer_create(GRect(0, 168-126, 144, 126));	
+	bitmap_layer_set_compositing_mode(sparks_layer, GCompOpSet);	
 	layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(sparks_layer));
 	
 	// Blood rune layer
-	rune_layer = bitmap_layer_create(GRect(0, 0, 30, 30));
+	rune_layer = bitmap_layer_create(GRect(0, 0, 32, 32));
+	bitmap_layer_set_compositing_mode(rune_layer, GCompOpSet);
 	layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(rune_layer));
 	
 	// Battery layers
-	charge_layer = bitmap_layer_create(GRect(144-30, 0, 30, 30));
-	bitmap_layer_set_compositing_mode(charge_layer, GCompOpAssign);
+	charge_layer = bitmap_layer_create(GRect(144-32, 0, 32, 32));
+	bitmap_layer_set_compositing_mode(charge_layer, GCompOpSet);
 	layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(charge_layer));
 	
-	batt_layer = text_layer_create(GRect(144-29, 4, 30, 30));
+	batt_layer = text_layer_create(GRect(144-30, 5, 30, 30));
 	text_layer_set_background_color(batt_layer, GColorClear);
-	text_layer_set_text_color(batt_layer, GColorWhite);	
+	text_layer_set_text_color(batt_layer, GColorDarkCandyAppleRed);	
 	text_layer_set_font(batt_layer, s_font_date);
 	text_layer_set_text_alignment(batt_layer, GTextAlignmentCenter);
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(batt_layer));
@@ -70,7 +71,7 @@ void main_window_load(Window *window) {
 	// Time layer
 	time_layer = text_layer_create(GRect(0, 168-38, 144, 38));
 	text_layer_set_background_color(time_layer, GColorClear);
-	text_layer_set_text_color(time_layer, GColorWhite);	
+	text_layer_set_text_color(time_layer, GColorDarkCandyAppleRed);
 	text_layer_set_font(time_layer, s_font_time);
 	text_layer_set_text_alignment(time_layer, GTextAlignmentCenter);
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(time_layer));
@@ -78,7 +79,7 @@ void main_window_load(Window *window) {
 	// Date layer
 	date_layer = text_layer_create(GRect(3, 168-60, 144, 25));
 	text_layer_set_background_color(date_layer, GColorClear);
-	text_layer_set_text_color(date_layer, GColorWhite);
+	text_layer_set_text_color(date_layer, GColorLightGray);
 	text_layer_set_font(date_layer, s_font_date);
 	text_layer_set_text_alignment(date_layer, GTextAlignmentCenter);
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(date_layer));
@@ -86,27 +87,29 @@ void main_window_load(Window *window) {
 	// Message layer
 	message_layer = text_layer_create(GRect(23, 10, 100, 100));
 	text_layer_set_background_color(message_layer, GColorClear);
-	text_layer_set_text_color(message_layer, GColorWhite);	
+	text_layer_set_text_color(message_layer, GColorBlack);
 	text_layer_set_font(message_layer, s_font_jagged);
 	text_layer_set_text_alignment(message_layer, GTextAlignmentCenter);
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(message_layer));
 	
 	// Temperature layers
-	s_stone_layer = bitmap_layer_create(GRect(144-29, 83, 27, 19));
+	s_stone_layer = bitmap_layer_create(GRect(144-30, 82, 29, 21));
+	bitmap_layer_set_compositing_mode(s_stone_layer, GCompOpSet);
 	s_stone_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_STONE);
 	bitmap_layer_set_bitmap(s_stone_layer, s_stone_bitmap);
 	layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_stone_layer));
 	
 	temp_layer = text_layer_create(GRect(144-28, 87, 17, 30));
 	text_layer_set_background_color(temp_layer, GColorClear);
-	text_layer_set_text_color(temp_layer, GColorBlack);	
+	text_layer_set_text_color(temp_layer, GColorLightGray);	
 	text_layer_set_font(temp_layer, s_font_temp);
 	text_layer_set_text_alignment(temp_layer, GTextAlignmentCenter);
 	text_layer_set_text(temp_layer, "...");
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(temp_layer));
 	
 	// Second stone layer
-	s_stone_layer_2 = bitmap_layer_create(GRect(3, 84, 26, 18));
+	s_stone_layer_2 = bitmap_layer_create(GRect(2, 83, 28, 20));
+	bitmap_layer_set_compositing_mode(s_stone_layer_2, GCompOpSet);
 	s_stone_bitmap_2 = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_STONE2);
 	bitmap_layer_set_bitmap(s_stone_layer_2, s_stone_bitmap_2);
 	layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_stone_layer_2));
