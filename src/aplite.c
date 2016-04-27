@@ -49,7 +49,7 @@ void main_window_load(Window *window) {
 	hands_bitmap_2 = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ARMS_2);
 	
 	// Sparks layer
-	sparks_layer = bitmap_layer_create(GRect(0, 168-62, 144, 62));	
+	sparks_layer = bitmap_layer_create(GRect(0, 168-126, 144, 126));	
 	bitmap_layer_set_compositing_mode(sparks_layer, GCompOpOr);	
 	layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(sparks_layer));
 	
