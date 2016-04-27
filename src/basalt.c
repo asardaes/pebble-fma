@@ -68,7 +68,7 @@ static void batt_border(Layer *this_layer, GContext *ctx) {
 
 void main_window_load(Window *window) {
 	// Black background, 144 × 168 pixels, 176 PPI
-	window_set_background_color(window, GColorChromeYellow);
+	window_set_background_color(window, GColorWindsorTan);
 	
 	// Assign GFont
 	s_font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TIME_30));
