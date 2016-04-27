@@ -9,6 +9,8 @@ extern GBitmap *bg_bitmap;
 extern GBitmap *hands_bitmap_0, *hands_bitmap_1, *hands_bitmap_2;
 extern GBitmap *rune_bitmap, *charge_bitmap;
 
+extern uint32_t anim_duration;
+
 static Window *s_main_window;
 
 static GBitmap *s_sparks_bitmap_1, *s_sparks_bitmap_2;
@@ -20,7 +22,6 @@ static char temperature[5];
 
 static int anim_index = 1;
 static int anim_queue = 0;
-static uint32_t anim_duration = 75;
 
 static bool weather_flag = true; // true initially
 static bool temp_unit = false; // false (°C) by default
@@ -212,12 +213,12 @@ static void next_animation() {
 			bitmap_layer_set_bitmap(hands_layer, hands_bitmap_2);
 			text_layer_set_text(time_layer, "");
 			text_layer_set_text(date_layer, "");
-			anim_duration = 100;
+			anim_duration += 25;
 			anim_index++;
 		break;
 		
 		case 3:
-			psleep(200);
+			psleep(PBL_IF_COLOR_ELSE(175, 200));
 
 			bitmap_layer_set_bitmap(sparks_layer, s_sparks_bitmap_1);
 			layer_set_hidden(bitmap_layer_get_layer(sparks_layer), false);
@@ -257,7 +258,7 @@ static void next_animation() {
 		
 		default:
 			anim_index = 1;
-			anim_duration = 75;
+			anim_duration -= 25;
 
 			layer_set_hidden(bitmap_layer_get_layer(sparks_layer), true);
 			gbitmap_destroy(s_sparks_bitmap_2);

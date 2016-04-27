@@ -17,6 +17,8 @@ GBitmap *bg_bitmap;
 GBitmap *hands_bitmap_0, *hands_bitmap_1, *hands_bitmap_2;
 GBitmap *rune_bitmap, *charge_bitmap;
 
+uint32_t anim_duration = 60;
+
 /* ===================================================================================================================== */
 
 void main_window_load(Window *window) {
