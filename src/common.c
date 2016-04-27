@@ -11,7 +11,7 @@ extern GBitmap *rune_bitmap, *charge_bitmap;
 
 static Window *s_main_window;
 
-static GBitmap *s_sparks_bitmap;
+static GBitmap *s_sparks_bitmap_1, *s_sparks_bitmap_2;
 
 static char date_buffer[16];
 static char time_buffer[] = "00:00";
@@ -201,10 +201,6 @@ static void next_animation() {
 	//APP_LOG(APP_LOG_LEVEL_DEBUG, "Animation %d", anim_index);
 	bool stop = 0;
 	
-	if (anim_index > 3) {
-		gbitmap_destroy(s_sparks_bitmap);		
-	}
-	
 	switch (anim_index) {
 		case 1:
 			bitmap_layer_set_bitmap(hands_layer, hands_bitmap_1);
@@ -212,6 +208,7 @@ static void next_animation() {
 		break;
 		
 		case 2:
+			s_sparks_bitmap_1 = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPARKS_1);
 			bitmap_layer_set_bitmap(hands_layer, hands_bitmap_2);
 			text_layer_set_text(time_layer, "");
 			text_layer_set_text(date_layer, "");
@@ -222,32 +219,38 @@ static void next_animation() {
 		case 3:
 			psleep(200);
 
-			s_sparks_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPARKS_1);
-			bitmap_layer_set_bitmap(sparks_layer, s_sparks_bitmap);
+			bitmap_layer_set_bitmap(sparks_layer, s_sparks_bitmap_1);
 			layer_set_hidden(bitmap_layer_get_layer(sparks_layer), false);
+
+			s_sparks_bitmap_2 = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPARKS_2);
 
 			anim_index++;
 		break;
 		
 		case 4:
-			s_sparks_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPARKS_2);
-			bitmap_layer_set_bitmap(sparks_layer, s_sparks_bitmap);
+			bitmap_layer_set_bitmap(sparks_layer, s_sparks_bitmap_2);
+
+			gbitmap_destroy(s_sparks_bitmap_1);
+			s_sparks_bitmap_1 = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPARKS_3);
 
 			anim_index++;
 		break;
 		
 		case 5:
+			bitmap_layer_set_bitmap(sparks_layer, s_sparks_bitmap_1);
 			bitmap_layer_set_bitmap(hands_layer, hands_bitmap_1);
-			s_sparks_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPARKS_3);
-			bitmap_layer_set_bitmap(sparks_layer, s_sparks_bitmap);
+
+			gbitmap_destroy(s_sparks_bitmap_2);
+			s_sparks_bitmap_2 = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPARKS_4);
 
 			anim_index++;
 		break;
 		
 		case 6:
+			bitmap_layer_set_bitmap(sparks_layer, s_sparks_bitmap_2);
 			bitmap_layer_set_bitmap(hands_layer, hands_bitmap_0);
-			s_sparks_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPARKS_4);
-			bitmap_layer_set_bitmap(sparks_layer, s_sparks_bitmap);
+
+			gbitmap_destroy(s_sparks_bitmap_1);
 
 			anim_index++;
 		break;
@@ -255,8 +258,9 @@ static void next_animation() {
 		default:
 			anim_index = 1;
 			anim_duration = 75;
-		
+
 			layer_set_hidden(bitmap_layer_get_layer(sparks_layer), true);
+			gbitmap_destroy(s_sparks_bitmap_2);
 
 			if (!dbg)
 				stop = 1;
