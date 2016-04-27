@@ -9,7 +9,7 @@
     ],
     "companyName": "Apestowesome",
     "enableMultiJS": true,
-    "longName": "FMA State Alchemist",
+    "longName": "Fullmetal Alchemist: Pocket Smartwatch",
     "projectType": "native",
     "resources": {
         "media": [
@@ -190,13 +190,13 @@
         ]
     },
     "sdkVersion": "3",
-    "shortName": "FMA Watch",
+    "shortName": "FMA Pocketwatch",
     "targetPlatforms": [
         "aplite",
         "basalt"
     ],
     "uuid": "26b12c52-6eaa-4b69-ac63-1c553146b3ad",
-    "versionLabel": "2.1",
+    "versionLabel": "3.0",
     "watchapp": {
         "watchface": true
     }
