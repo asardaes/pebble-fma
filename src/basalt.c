@@ -5,6 +5,7 @@
 
 extern char date_buffer[16];
 extern char batt_buffer[4];
+extern char time_buffer[6];
 
 static GFont s_font_time, s_font_date, s_font_jagged, s_font_temp;
 
@@ -12,9 +13,9 @@ static BitmapLayer *s_stone_layer, *s_stone_layer_2;
 
 static GBitmap *s_stone_bitmap, *s_stone_bitmap_2;
 
-Layer *date_layer_b, *batt_layer_b;
+Layer *date_layer_b, *batt_layer_b, *time_layer_b;
 
-TextLayer *time_layer, *message_layer, *temp_layer;
+TextLayer *message_layer, *temp_layer;
 
 BitmapLayer *bg_layer, *hands_layer, *sparks_layer, *rune_layer, *charge_layer;
 
@@ -43,6 +44,25 @@ static void date_border(Layer *this_layer, GContext *ctx) {
 
 	graphics_context_set_text_color(ctx, GColorLightGray);
 	graphics_draw_text(ctx, date_buffer, s_font_date, GRect(x0, y0, x1, y1), GTextOverflowModeFill, GTextAlignmentCenter, NULL);
+}
+
+static void time_border(Layer *this_layer, GContext *ctx) {
+	graphics_context_set_text_color(ctx, GColorBlack);
+
+	int x0 = 1;
+	int y0 = 168 - 39;
+	int x1 = 143;
+	int y1 = 38;
+
+	for (int i = -1; i < 2; i = i + 2) {
+		for (int j = -1; j < 2; j = j + 2) {
+			graphics_draw_text(ctx, time_buffer, s_font_time, GRect(x0 + i, y0 + j, x1, y1),
+				GTextOverflowModeFill, GTextAlignmentCenter, NULL);
+		}
+	}
+
+	graphics_context_set_text_color(ctx, GColorDarkCandyAppleRed);
+	graphics_draw_text(ctx, time_buffer, s_font_time, GRect(x0, y0, x1, y1), GTextOverflowModeFill, GTextAlignmentCenter, NULL);
 }
 
 static void batt_border(Layer *this_layer, GContext *ctx) {
@@ -113,12 +133,9 @@ void main_window_load(Window *window) {
 	layer_add_child(window_get_root_layer(window), batt_layer_b);
 	
 	// Time layer
-	time_layer = text_layer_create(GRect(0, 168-38, 144, 38));
-	text_layer_set_background_color(time_layer, GColorClear);
-	text_layer_set_text_color(time_layer, GColorDarkCandyAppleRed);
-	text_layer_set_font(time_layer, s_font_time);
-	text_layer_set_text_alignment(time_layer, GTextAlignmentCenter);
-	layer_add_child(window_get_root_layer(window), text_layer_get_layer(time_layer));
+	time_layer_b = layer_create(GRect(0, 0, 144, 168));
+	layer_set_update_proc(time_layer_b, time_border);
+	layer_add_child(window_get_root_layer(window), time_layer_b);
 	
 	// Date layer
 	date_layer_b = layer_create(GRect(0, 0, 144, 168));
@@ -189,10 +206,10 @@ void main_window_unload(Window *window) {
 	gbitmap_destroy(s_stone_bitmap_2);
 	
 	// Destroy text layers
-	text_layer_destroy(time_layer);
 	text_layer_destroy(message_layer);
 	text_layer_destroy(temp_layer);
 	layer_destroy(date_layer_b);
+	layer_destroy(time_layer_b);
 	layer_destroy(batt_layer_b);
 }
 

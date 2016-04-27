@@ -70,7 +70,7 @@ void main_window_load(Window *window) {
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(batt_layer));
 	
 	// Time layer
-	time_layer = text_layer_create(GRect(0, 168-38, 144, 38));
+	time_layer = text_layer_create(GRect(0, 168-39, 144, 38));
 	text_layer_set_background_color(time_layer, GColorClear);
 	text_layer_set_text_color(time_layer, GColorWhite);	
 	text_layer_set_font(time_layer, s_font_time);
