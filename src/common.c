@@ -205,7 +205,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 
 static void next_animation() {
 	//APP_LOG(APP_LOG_LEVEL_DEBUG, "Animation %d", anim_index);
-	bool stop = 0;
+	bool stop = false;
 	
 	switch (anim_index) {
 		case 1:
@@ -276,7 +276,7 @@ static void next_animation() {
 			gbitmap_destroy(s_sparks_bitmap_2);
 
 			if (!dbg)
-				stop = 1;
+				stop = true;
 			else
 				update_time();
 		break;

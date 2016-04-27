@@ -23,7 +23,7 @@ GBitmap *bg_bitmap;
 GBitmap *hands_bitmap_0, *hands_bitmap_1, *hands_bitmap_2;
 GBitmap *rune_bitmap, *charge_bitmap;
 
-uint32_t anim_duration = 65;
+uint32_t anim_duration = 80;
 
 /* ===================================================================================================================== */
 
@@ -68,8 +68,8 @@ static void time_border(Layer *this_layer, GContext *ctx) {
 static void batt_border(Layer *this_layer, GContext *ctx) {
 	graphics_context_set_text_color(ctx, GColorBlack);
 
-	int x0 = 144 - 30;
-	int y0 = 5;
+	int x0 = 144 - 29;
+	int y0 = 4;
 	int x1 = 30;
 	int y1 = 30;
 
@@ -119,12 +119,12 @@ void main_window_load(Window *window) {
 	layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(sparks_layer));
 	
 	// Blood rune layer
-	rune_layer = bitmap_layer_create(GRect(0, 0, 32, 32));
+	rune_layer = bitmap_layer_create(GRect(0, 0, 30, 31));
 	bitmap_layer_set_compositing_mode(rune_layer, GCompOpSet);
 	layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(rune_layer));
 	
 	// Battery layers
-	charge_layer = bitmap_layer_create(GRect(144-32, 0, 32, 32));
+	charge_layer = bitmap_layer_create(GRect(144-30, 0, 30, 30));
 	bitmap_layer_set_compositing_mode(charge_layer, GCompOpSet);
 	layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(charge_layer));
 	
