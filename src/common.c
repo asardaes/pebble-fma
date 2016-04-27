@@ -218,7 +218,7 @@ static void next_animation() {
 		break;
 		
 		case 3:
-			psleep(PBL_IF_COLOR_ELSE(175, 200));
+			psleep(PBL_IF_COLOR_ELSE(185, 200));
 
 			bitmap_layer_set_bitmap(sparks_layer, s_sparks_bitmap_1);
 			layer_set_hidden(bitmap_layer_get_layer(sparks_layer), false);

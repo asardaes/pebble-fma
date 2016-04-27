@@ -17,7 +17,7 @@ GBitmap *bg_bitmap;
 GBitmap *hands_bitmap_0, *hands_bitmap_1, *hands_bitmap_2;
 GBitmap *rune_bitmap, *charge_bitmap;
 
-uint32_t anim_duration = 60;
+uint32_t anim_duration = 65;
 
 /* ===================================================================================================================== */
 
@@ -65,7 +65,7 @@ void main_window_load(Window *window) {
 	
 	batt_layer = text_layer_create(GRect(144-30, 5, 30, 30));
 	text_layer_set_background_color(batt_layer, GColorClear);
-	text_layer_set_text_color(batt_layer, GColorDarkCandyAppleRed);	
+	text_layer_set_text_color(batt_layer, GColorLightGray);
 	text_layer_set_font(batt_layer, s_font_date);
 	text_layer_set_text_alignment(batt_layer, GTextAlignmentCenter);
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(batt_layer));
