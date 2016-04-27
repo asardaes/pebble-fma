@@ -39,16 +39,14 @@ char time_buffer[] = "00:00";
 
 static void update_time();
 
-void debug() {
-	/*
-	static int test = -20;
+void debug() {	
+	static int test = 7;
 	snprintf(temperature, sizeof(temperature), "%d", test);
 	text_layer_set_text(temp_layer, temperature);
-	test++;
+	//test++;
 	update_time();
-	app_timer_register(500, debug, NULL);
-	//next_animation();
-	*/
+	//app_timer_register(500, debug, NULL);
+	next_animation();
 }
 
 /* ===================================================================================================================== */
@@ -173,14 +171,11 @@ static void update_time() {
 	
 	if (dbg) {
 		snprintf(time_buffer, sizeof(time_buffer), "%s", "12:34");
-		PBL_IF_COLOR_ELSE(layer_mark_dirty(time_layer_b), text_layer_set_text(time_layer, time_buffer));
-
-	} else {
-		PBL_IF_COLOR_ELSE(layer_mark_dirty(time_layer_b), text_layer_set_text(time_layer, time_buffer));
-		
-		if (connection_service_peek_pebble_app_connection() && weather_flag)
-			get_weather();
+	} else if (connection_service_peek_pebble_app_connection() && weather_flag) {
+		get_weather();
 	}
+
+	PBL_IF_COLOR_ELSE(layer_mark_dirty(time_layer_b), text_layer_set_text(time_layer, time_buffer));
 	
 	// Date
 	strftime(date_buffer, sizeof(date_buffer), "%b, %a %d", tick_time);
