@@ -1,7 +1,10 @@
 #include <pebble.h>
 #include "common.h"
 
-extern TextLayer *time_layer, *date_layer, *message_layer, *batt_layer, *temp_layer;
+extern Layer *date_layer_b, *batt_layer_b; // basalt
+
+extern TextLayer *date_layer, *batt_layer; // aplite
+extern TextLayer *time_layer, *message_layer, *temp_layer;
 
 extern BitmapLayer *bg_layer, *hands_layer, *sparks_layer, *rune_layer, *charge_layer;
 
@@ -15,9 +18,7 @@ static Window *s_main_window;
 
 static GBitmap *s_sparks_bitmap_1, *s_sparks_bitmap_2;
 
-static char date_buffer[16];
 static char time_buffer[] = "00:00";
-static char batt_buffer[] = "100";
 static char temperature[5];
 
 static int anim_index = 1;
@@ -29,6 +30,9 @@ static bool temp_unit = false; // false (°C) by default
 static bool dbg = false;
 
 static void next_animation();
+
+char date_buffer[16];
+char batt_buffer[] = "100";
 
 /* ===================================================================================================================== */
 
@@ -138,19 +142,16 @@ void handle_battery(BatteryChargeState charge_state) {
 	
 	if (charge_state.is_charging) {
 		charge_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CHARGE);
-
-		text_layer_set_text(batt_layer, "");
+		snprintf(batt_buffer, sizeof(batt_buffer), "%s", "");
 		
 	} else {
 		charge_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CIRCLE);
-		
 		snprintf(batt_buffer, sizeof(batt_buffer), "%d", charge_state.charge_percent);
-		text_layer_set_text(batt_layer, batt_buffer);
 	}
+
+	PBL_IF_COLOR_ELSE(layer_mark_dirty(batt_layer_b), text_layer_set_text(batt_layer, batt_buffer));
 	
 	bitmap_layer_set_bitmap(charge_layer, charge_bitmap);
-	
-	if (dbg) text_layer_set_text(batt_layer, "100");
 }
 
 /* ===================================================================================================================== */
@@ -180,7 +181,8 @@ static void update_time() {
 	
 	// Date
 	strftime(date_buffer, sizeof(date_buffer), "%b, %a %d", tick_time);
-	text_layer_set_text(date_layer, date_buffer);
+
+	PBL_IF_COLOR_ELSE(layer_mark_dirty(date_layer_b), text_layer_set_text(date_layer, date_buffer));
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -212,7 +214,9 @@ static void next_animation() {
 			s_sparks_bitmap_1 = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPARKS_1);
 			bitmap_layer_set_bitmap(hands_layer, hands_bitmap_2);
 			text_layer_set_text(time_layer, "");
-			text_layer_set_text(date_layer, "");
+			snprintf(date_buffer, sizeof(date_buffer), "%s", "");
+			PBL_IF_COLOR_ELSE(layer_mark_dirty(date_layer_b),
+				layer_mark_dirty(text_layer_get_layer(date_layer)));
 			anim_duration += 25;
 			anim_index++;
 		break;

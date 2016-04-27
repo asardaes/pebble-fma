@@ -3,13 +3,18 @@
 #include <pebble.h>
 #include "common.h"
 
+extern char date_buffer[16];
+extern char batt_buffer[4];
+
 static GFont s_font_time, s_font_date, s_font_jagged, s_font_temp;
 
 static BitmapLayer *s_stone_layer, *s_stone_layer_2;
 
 static GBitmap *s_stone_bitmap, *s_stone_bitmap_2;
 
-TextLayer *time_layer, *date_layer, *message_layer, *batt_layer, *temp_layer;
+Layer *date_layer_b, *batt_layer_b;
+
+TextLayer *time_layer, *message_layer, *temp_layer;
 
 BitmapLayer *bg_layer, *hands_layer, *sparks_layer, *rune_layer, *charge_layer;
 
@@ -21,9 +26,49 @@ uint32_t anim_duration = 65;
 
 /* ===================================================================================================================== */
 
+static void date_border(Layer *this_layer, GContext *ctx) {
+	graphics_context_set_text_color(ctx, GColorBlack);
+
+	int x0 = 3;
+	int y0 = 168 - 60;
+	int x1 = 144;
+	int y1 = 25;
+
+	for (int i = -1; i < 2; i = i + 2) {
+		for (int j = -1; j < 2; j = j + 2) {
+			graphics_draw_text(ctx, date_buffer, s_font_date, GRect(x0 + i, y0 + j, x1, y1),
+				GTextOverflowModeFill, GTextAlignmentCenter, NULL);
+		}
+	}
+
+	graphics_context_set_text_color(ctx, GColorLightGray);
+	graphics_draw_text(ctx, date_buffer, s_font_date, GRect(x0, y0, x1, y1), GTextOverflowModeFill, GTextAlignmentCenter, NULL);
+}
+
+static void batt_border(Layer *this_layer, GContext *ctx) {
+	graphics_context_set_text_color(ctx, GColorBlack);
+
+	int x0 = 144 - 30;
+	int y0 = 5;
+	int x1 = 30;
+	int y1 = 30;
+
+	for (int i = -1; i < 2; i = i + 2) {
+		for (int j = -1; j < 2; j = j + 2) {
+			graphics_draw_text(ctx, batt_buffer, s_font_date, GRect(x0 + i, y0 + j, x1, y1),
+				GTextOverflowModeFill, GTextAlignmentCenter, NULL);
+		}
+	}
+
+	graphics_context_set_text_color(ctx, GColorLightGray);
+	graphics_draw_text(ctx, batt_buffer, s_font_date, GRect(x0, y0, x1, y1), GTextOverflowModeFill, GTextAlignmentCenter, NULL);
+}
+
+/* ===================================================================================================================== */
+
 void main_window_load(Window *window) {
 	// Black background, 144 × 168 pixels, 176 PPI
-	window_set_background_color(window, GColorOxfordBlue);
+	window_set_background_color(window, GColorChromeYellow);
 	
 	// Assign GFont
 	s_font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TIME_30));
@@ -63,12 +108,9 @@ void main_window_load(Window *window) {
 	bitmap_layer_set_compositing_mode(charge_layer, GCompOpSet);
 	layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(charge_layer));
 	
-	batt_layer = text_layer_create(GRect(144-30, 5, 30, 30));
-	text_layer_set_background_color(batt_layer, GColorClear);
-	text_layer_set_text_color(batt_layer, GColorLightGray);
-	text_layer_set_font(batt_layer, s_font_date);
-	text_layer_set_text_alignment(batt_layer, GTextAlignmentCenter);
-	layer_add_child(window_get_root_layer(window), text_layer_get_layer(batt_layer));
+	batt_layer_b = layer_create(GRect(0, 0, 144, 168));
+	layer_set_update_proc(batt_layer_b, batt_border);
+	layer_add_child(window_get_root_layer(window), batt_layer_b);
 	
 	// Time layer
 	time_layer = text_layer_create(GRect(0, 168-38, 144, 38));
@@ -79,12 +121,9 @@ void main_window_load(Window *window) {
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(time_layer));
 	
 	// Date layer
-	date_layer = text_layer_create(GRect(3, 168-60, 144, 25));
-	text_layer_set_background_color(date_layer, GColorClear);
-	text_layer_set_text_color(date_layer, GColorLightGray);
-	text_layer_set_font(date_layer, s_font_date);
-	text_layer_set_text_alignment(date_layer, GTextAlignmentCenter);
-	layer_add_child(window_get_root_layer(window), text_layer_get_layer(date_layer));
+	date_layer_b = layer_create(GRect(0, 0, 144, 168));
+	layer_set_update_proc(date_layer_b, date_border);
+	layer_add_child(window_get_root_layer(window), date_layer_b);
 	
 	// Message layer
 	message_layer = text_layer_create(GRect(23, 16, 100, 100));
@@ -151,10 +190,10 @@ void main_window_unload(Window *window) {
 	
 	// Destroy text layers
 	text_layer_destroy(time_layer);
-	text_layer_destroy(date_layer);
 	text_layer_destroy(message_layer);
-	text_layer_destroy(batt_layer);
 	text_layer_destroy(temp_layer);
+	layer_destroy(date_layer_b);
+	layer_destroy(batt_layer_b);
 }
 
 #endif
