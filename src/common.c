@@ -108,16 +108,16 @@ static void tap_handler_exit(void *data) {
 }
 
 static void tap_handler(AccelAxisType axis, int32_t direction) {
-	APP_LOG(APP_LOG_LEVEL_DEBUG, "Entering tap_handler");
-	
-	if (bg_bitmap) gbitmap_destroy(bg_bitmap);
-	
-	bg_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BG_CIRCLE);
-	bitmap_layer_set_bitmap(bg_layer, bg_bitmap);
-	
-	text_layer_set_text(message_layer, "Don't\nforget\n3.oct.11");
-	
 	if (anim_queue == 0) {
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "Entering tap_handler");
+	
+		if (bg_bitmap) gbitmap_destroy(bg_bitmap);
+	
+		bg_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BG_CIRCLE);
+		bitmap_layer_set_bitmap(bg_layer, bg_bitmap);
+	
+		text_layer_set_text(message_layer, "Don't\nforget\n3.oct.11");
+	
 		app_timer_register(5000, tap_handler_exit, NULL);
 		anim_queue++;
 	}
