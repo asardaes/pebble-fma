@@ -10,6 +10,10 @@
 #define UNIT_TEMPERATURE 1
 #endif
 
+#ifndef HANDS
+#define HANDS 2
+#endif
+
 void handle_battery(BatteryChargeState charge_state); // used by main_window_load
 void handle_bt(bool connected); // used by main_window_load
 

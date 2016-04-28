@@ -25,6 +25,7 @@ static int anim_queue = 0;
 
 static bool weather_flag = true; // true initially
 static bool temp_unit = false; // false (°C) by default
+static bool show_hands = true;
 
 static bool dbg = false;
 
@@ -203,7 +204,14 @@ static void next_animation() {
 	bool stop = false;
 	
 	switch (anim_index) {
+		case 0:
+			layer_set_hidden(bitmap_layer_get_layer(hands_layer), false);
+			anim_index++;
+			anim_duration += 500;
+		break;
+
 		case 1:
+			if (anim_duration > 500) anim_duration -= 500;
 			bitmap_layer_set_bitmap(hands_layer, hands_bitmap_1);
 			anim_index++;
 		break;
@@ -262,13 +270,32 @@ static void next_animation() {
 
 			anim_index++;
 		break;
-		
-		default:
-			anim_index = 1;
-			anim_duration -= 25;
 
+		case 7:
 			layer_set_hidden(bitmap_layer_get_layer(sparks_layer), true);
 			gbitmap_destroy(s_sparks_bitmap_2);
+
+			anim_duration -= 25;
+
+			if (show_hands) {
+				anim_index = 1;
+
+				if (!dbg)
+					stop = true;
+				else
+					update_time();
+
+			} else {
+				anim_index++;
+				anim_duration += 500;
+				update_time();
+			}
+		break;
+		
+		default:
+			layer_set_hidden(bitmap_layer_get_layer(hands_layer), true);
+			anim_index = 0;
+			anim_duration -= 500;
 
 			if (!dbg)
 				stop = true;
@@ -299,36 +326,51 @@ void inbox_received_callback(DictionaryIterator *iterator, void *context) {
 		// Which key was received?
 		switch(t->key) {
 			case WEATHER_TEMPERATURE:
-			// true = Fahrenheit
-			if (temp_unit) {
-				snprintf(temperature, sizeof(temperature), "%d",  ((int)t->value->int32) * 9/5 + 32 );
-			} else {
-				snprintf(temperature, sizeof(temperature), "%d", (int)t->value->int32);
-			}
-			text_layer_set_text(temp_layer, temperature);
+				// true = Fahrenheit
+				if (temp_unit) {
+					snprintf(temperature, sizeof(temperature), "%d",  ((int)t->value->int32) * 9/5 + 32 );
+				} else {
+					snprintf(temperature, sizeof(temperature), "%d", (int)t->value->int32);
+				}
+				text_layer_set_text(temp_layer, temperature);
 			
-			// Mark that weather shouldn't be updated any more
-			weather_flag = 0; 
+				// Mark that weather shouldn't be updated any more
+				weather_flag = 0; 
 			break;
 			
 			case UNIT_TEMPERATURE:
-			if (strcmp(t->value->cstring, "C") == 0) {
-				persist_write_bool(UNIT_TEMPERATURE, false);
-				temp_unit = 0;
-				APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting temperature units to celsius");
-			} else if (strcmp(t->value->cstring, "F") == 0) {
-				persist_write_bool(UNIT_TEMPERATURE, true);
-				temp_unit = 1;
-				APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting temperature units to fahrenheit");
-			}
+				if (strcmp(t->value->cstring, "C") == 0) {
+					persist_write_bool(UNIT_TEMPERATURE, false);
+					temp_unit = 0;
+					APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting temperature units to celsius");
+				} else if (strcmp(t->value->cstring, "F") == 0) {
+					persist_write_bool(UNIT_TEMPERATURE, true);
+					temp_unit = 1;
+					APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting temperature units to fahrenheit");
+				}
 			
-			text_layer_set_text(temp_layer, "...");
-			weather_flag = 1;
-			get_weather();
+				text_layer_set_text(temp_layer, "...");
+				weather_flag = 1;
+				get_weather();
+			break;
+
+			case HANDS:
+				if (strcmp(t->value->cstring, "yes") == 0) {
+					show_hands = true;
+					layer_set_hidden(bitmap_layer_get_layer(hands_layer), false);
+					persist_write_bool(HANDS, true);
+					if (anim_queue == 0) anim_index = 1;
+
+				} else {
+					show_hands = false;
+					layer_set_hidden(bitmap_layer_get_layer(hands_layer), true);
+					persist_write_bool(HANDS, false);
+					if (anim_queue == 0) anim_index = 0;
+				}
 			break;
 			
 			default:
-			APP_LOG(APP_LOG_LEVEL_ERROR, "Key %d not recognized!", (int)t->key);
+				APP_LOG(APP_LOG_LEVEL_ERROR, "Key %d not recognized!", (int)t->key);
 			break;
 		}
 
@@ -354,6 +396,9 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 void init() {
 	if (persist_exists(UNIT_TEMPERATURE))
 		temp_unit = persist_read_bool(UNIT_TEMPERATURE);
+
+	if (persist_exists(HANDS))
+		show_hands = persist_read_bool(HANDS);
 	
 	// Create main Window element and assign to pointer
 	s_main_window = window_create();
