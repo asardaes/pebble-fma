@@ -2,7 +2,7 @@
 
 <html>
   <head>
-    <title>Config</title>
+    <title>Watchface Configuration</title>
   </head>
   <body>
     <h1>Configuration</h1>
@@ -15,6 +15,13 @@
     </select>
     </p>
 
+    <p>Show hands:
+    <select id="hands">
+      <option value="yes">Always</option>
+      <option value="no">During Animation</option>
+    </select>
+    </p>
+
     <p>
     <button id="save_button">Save</button>
     </p>
@@ -23,9 +30,11 @@
       //Setup to allow easy adding more options later
       function saveOptions() {
         var tunit = document.getElementById("unit_temperature");
+        var hands = document.getElementById("hands");
 
         var options = {
-          "tunit": tunit.options[tunit.selectedIndex].value
+          "tunit": tunit.options[tunit.selectedIndex].value,
+          "hands": hands.options[hands.selectedIndex].value,
         }
         
         return options;
@@ -41,7 +50,8 @@
           
           window.location.href = location;
         }, 
-		false);
+	false);
     </script>
   </body>
 </html>
+
